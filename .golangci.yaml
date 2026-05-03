@@ -1,0 +1,27 @@
+# https://golangci-lint.run/docs/configuration/file
+version: "2"
+
+linters:
+  enable:
+    - gocritic
+    - modernize
+    - sloglint
+  settings:
+    gocritic:
+      enable-all: true
+    sloglint:
+      custom-funcs:
+        - name: go-simpler.org/slogctx.With
+          msg-pos: -1
+          args-pos: 0
+  exclusions:
+    presets:
+      - std-error-handling
+
+formatters:
+  enable:
+    - gofumpt
+    - goimports
+  settings:
+    gofumpt:
+      extra-rules: true
