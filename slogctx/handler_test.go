@@ -6,12 +6,12 @@ import (
 	"log/slog"
 	"testing"
 
-	"go-simpler.org/slogctx"
+	"go-simpler.org/slogutil/slogctx"
 )
 
 func TestHandler(t *testing.T) {
 	replaceAttr := func(_ []string, a slog.Attr) slog.Attr {
-		if a.Key == slog.TimeKey {
+		if a.Key == slog.TimeKey || a.Key == slog.LevelKey {
 			return slog.Attr{}
 		}
 		return a
@@ -29,9 +29,9 @@ func TestHandler(t *testing.T) {
 
 	got := "\n" + buf.String()
 	want := `
-level=INFO msg="adding foo"
-level=INFO msg="adding bar" foo=1
-level=INFO msg="got foo bar" foo=1 bar=2
+msg="adding foo"
+msg="adding bar" foo=1
+msg="got foo bar" foo=1 bar=2
 `
 	if got != want {
 		t.Errorf("\ngot: %s\nwant: %s", got, want)
@@ -46,12 +46,12 @@ func foo(ctx context.Context, l *slog.Logger) {
 
 func bar(ctx context.Context, l *slog.Logger) {
 	l.InfoContext(ctx, "adding bar")
-	ctx = slogctx.With(ctx, "bar", 2)
+	_ = slogctx.With(ctx, "bar", 2)
 }
 
 // goos: darwin
 // goarch: arm64
-// pkg: go-simpler.org/slogctx
+// pkg: go-simpler.org/slogutil/slogutil
 // cpu: Apple M1 Pro
 // BenchmarkHandler/enabled-8              204999273                5.743 ns/op           0 B/op          0 allocs/op
 // BenchmarkHandler/disabled-8             261334262                4.591 ns/op           0 B/op          0 allocs/op
