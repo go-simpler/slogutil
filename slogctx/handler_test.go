@@ -46,7 +46,7 @@ func foo(ctx context.Context, l *slog.Logger) {
 
 func bar(ctx context.Context, l *slog.Logger) {
 	l.InfoContext(ctx, "adding bar")
-	ctx = slogctx.With(ctx, "bar", 2)
+	_ = slogctx.With(ctx, "bar", 2)
 }
 
 // goos: darwin

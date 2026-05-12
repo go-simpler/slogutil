@@ -32,7 +32,7 @@ func TestAll(t *testing.T) {
 	)
 
 	var got bytes.Buffer
-	json.Indent(&got, buf.Bytes(), "", "  ")
+	_ = json.Indent(&got, buf.Bytes(), "", "  ")
 
 	const want = `{
   "error": "oops",
