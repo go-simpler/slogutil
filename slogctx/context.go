@@ -1,3 +1,4 @@
+// Package slogctx implements utilities for logging request-scoped data via [context.Context].
 package slogctx
 
 import (

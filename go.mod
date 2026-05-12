@@ -1,3 +1,3 @@
-module go-simpler.org/slogctx
+module go-simpler.org/slogutil
 
 go 1.25.0
