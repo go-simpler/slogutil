@@ -23,7 +23,9 @@ func TestAll(t *testing.T) {
 	l := slog.New(h)
 
 	l.Info("",
+		slogattr.Error(nil),
 		slogattr.Error(errors.New("oops")),
+		slogattr.Slice("empty_slice", []int{}),
 		slogattr.Slice("slice", []int{1, 2, 3}),
 		slogattr.Stringer("stringer", slog.LevelInfo),
 		slogattr.LogValuer("log_valuer", point{1, 2}),
