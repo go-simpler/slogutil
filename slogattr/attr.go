@@ -1,4 +1,4 @@
-// Package slogattr implements utilities for creating [slog.Attr]s.
+// Package slogattr implements utilities for creating [slog.Attr].
 package slogattr
 
 import (
@@ -9,16 +9,22 @@ import (
 )
 
 // ErrorKey is the key used by the [Error] function.
-// The associated value is an [error].
+// The associated value is an error.
 const ErrorKey = "error"
 
-// Error returns a [slog.Attr] for an [error] value.
+// Error returns a [slog.Attr] for an error value.
 func Error(err error) slog.Attr {
+	if err == nil {
+		return slog.Attr{}
+	}
 	return slog.Any(ErrorKey, err)
 }
 
 // Slice returns a [slog.Attr] for a slice of [cmp.Ordered] values.
 func Slice[T cmp.Ordered](key string, ts []T) slog.Attr {
+	if len(ts) == 0 {
+		return slog.Attr{}
+	}
 	return slog.Any(key, ts)
 }
 
@@ -33,11 +39,14 @@ func LogValuer(key string, v slog.LogValuer) slog.Attr {
 }
 
 // LogValuers returns a [slog.Attr] for a slice of [slog.LogValuer] values.
-// Given to [slog.JSONHandler], it will be written as {"key":{"1":...,"2":...}},
+// Given to [slog.JSONHandler], it will be written as
+//
+//	{"key":{"1":...,"2":...}}
+//
 // where ... is the [slog.LogValuer] itself.
 func LogValuers[T slog.LogValuer](key string, ts []T) slog.Attr {
-	// A [slog.LogValuer] in a slice is not supported by [log/slog].
-	// As a workaround, we convert the slice into a [slog.GroupValue].
+	// A slog.LogValuer in a slice is not supported by log/slog.
+	// As a workaround, we convert the slice into a slog.GroupValue.
 	// More:
 	// - https://github.com/golang/go/issues/63204
 	// - https://github.com/golang/go/issues/71088

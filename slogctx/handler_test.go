@@ -22,16 +22,13 @@ func TestHandler(t *testing.T) {
 	l := slog.New(slogctx.NewHandler(h))
 
 	ctx := t.Context()
-	ctx = slogctx.With(ctx)
-
+	ctx = slogctx.With(ctx, "x", 1)
 	foo(ctx, l)
-	l.InfoContext(ctx, "got foo bar")
 
 	got := "\n" + buf.String()
 	want := `
-msg="adding foo"
-msg="adding bar" foo=1
-msg="got foo bar" foo=1 bar=2
+msg="hello from foo" x=1
+msg="hello from bar" x=1 y=2
 `
 	if got != want {
 		t.Errorf("\ngot: %s\nwant: %s", got, want)
@@ -39,22 +36,21 @@ msg="got foo bar" foo=1 bar=2
 }
 
 func foo(ctx context.Context, l *slog.Logger) {
-	l.InfoContext(ctx, "adding foo")
-	ctx = slogctx.With(ctx, "foo", 1)
+	l.InfoContext(ctx, "hello from foo")
+	ctx = slogctx.With(ctx, "y", 2)
 	bar(ctx, l)
 }
 
 func bar(ctx context.Context, l *slog.Logger) {
-	l.InfoContext(ctx, "adding bar")
-	_ = slogctx.With(ctx, "bar", 2)
+	l.InfoContext(ctx, "hello from bar")
 }
 
 // goos: darwin
 // goarch: arm64
-// pkg: go-simpler.org/slogutil/slogutil
+// pkg: go-simpler.org/slogutil/slogctx
 // cpu: Apple M1 Pro
-// BenchmarkHandler/enabled-8              204999273                5.743 ns/op           0 B/op          0 allocs/op
-// BenchmarkHandler/disabled-8             261334262                4.591 ns/op           0 B/op          0 allocs/op
+// BenchmarkHandler/enabled-8              205089428                5.726 ns/op           0 B/op          0 allocs/op
+// BenchmarkHandler/disabled-8             262692470                4.568 ns/op           0 B/op          0 allocs/op
 func BenchmarkHandler(b *testing.B) {
 	b.Run("enabled", func(b *testing.B) {
 		benchmarkHandler(b, true)

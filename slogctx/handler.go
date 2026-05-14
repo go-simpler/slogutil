@@ -16,10 +16,8 @@ func NewHandler(h slog.Handler) slog.Handler {
 
 // Handle implements [slog.Handler].
 func (h *handler) Handle(ctx context.Context, r slog.Record) error { //nolint:gocritic // hugeParam: can't change the signature.
-	if p, ok := ctx.Value(ctxKey{}).(*payload); ok {
-		p.mu.RLock()
-		r.Add(p.args...)
-		p.mu.RUnlock()
+	if args, ok := ctx.Value(ctxKey{}).([]any); ok {
+		r.Add(args...)
 	}
 	return h.Handler.Handle(ctx, r)
 }
