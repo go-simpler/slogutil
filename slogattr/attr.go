@@ -22,15 +22,12 @@ func Error(err error) slog.Attr {
 
 // Slice returns a [slog.Attr] for a slice of [cmp.Ordered] values.
 func Slice[T cmp.Ordered](key string, ts []T) slog.Attr {
-	if len(ts) == 0 {
-		return slog.Attr{}
-	}
 	return slog.Any(key, ts)
 }
 
 // Stringer returns a [slog.Attr] for an [fmt.Stringer] value.
 func Stringer(key string, s fmt.Stringer) slog.Attr {
-	return slog.Any(key, s)
+	return slog.String(key, s.String())
 }
 
 // LogValuer returns a [slog.Attr] for a [slog.LogValuer] value.

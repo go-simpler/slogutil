@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"log/slog"
+	"syscall"
 	"testing"
 
 	"go-simpler.org/slogutil/slogattr"
@@ -25,9 +26,8 @@ func TestAll(t *testing.T) {
 	l.Info("",
 		slogattr.Error(nil),
 		slogattr.Error(errors.New("oops")),
-		slogattr.Slice("empty_slice", []int{}),
 		slogattr.Slice("slice", []int{1, 2, 3}),
-		slogattr.Stringer("stringer", slog.LevelInfo),
+		slogattr.Stringer("stringer", syscall.SIGINT),
 		slogattr.LogValuer("log_valuer", point{1, 2}),
 		slogattr.LogValuers("log_valuers", []point{{1, 2}, {3, 4}}),
 		slogattr.Lazy("lazy", func() string { return "foo" + "bar" }),
@@ -43,7 +43,7 @@ func TestAll(t *testing.T) {
     2,
     3
   ],
-  "stringer": "INFO",
+  "stringer": "interrupt",
   "log_valuer": {
     "x": 1,
     "y": 2
